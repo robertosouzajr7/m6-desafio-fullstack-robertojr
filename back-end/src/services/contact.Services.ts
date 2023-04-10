@@ -25,9 +25,12 @@ export const CreateContactService = async (
   return newContact;
 };
 
-export const UpdatecontactService = async (req: Request, id: string) => {
-  const contact = req.body;
-  const contactInrepository = AppDataSource.getRepository(contact);
+export const UpdatecontactService = async (
+  req: iContactRequest,
+  id: string
+) => {
+  const contact = req;
+  const contactInrepository = AppDataSource.getRepository(Contacts);
   const findcontact = contactInrepository.findOneBy({
     id: id,
   });
@@ -69,6 +72,6 @@ export const DeletecontactService = async (id: string) => {
   if (!contact) {
     throw new AppError("contacte não encontrado", 404);
   }
-  await findcontacts.delete(contact);
+  await findcontacts.delete(id);
   return {};
 };

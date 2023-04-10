@@ -16,6 +16,8 @@ import {
   UpdateContactController,
 } from "../controllers/contacts.Controllers";
 
+import { ensureAuthMiddleware } from "../middlewares/users.Middlewares";
+
 const useRouter = Router();
 
 //Cadastro de Usuario
@@ -25,15 +27,19 @@ useRouter.post("/users", CreateUserController);
 useRouter.post("/login", LoginUserController);
 
 //CRUD de Cliente//
-useRouter.post("/clients", CreateClientController);
-useRouter.patch("/clients/:id", UpdateClientController);
-useRouter.get("/clients", ListClientController);
-useRouter.delete("/clients/:id", DeleteClientController);
+useRouter.post("/clients", ensureAuthMiddleware, CreateClientController);
+useRouter.patch("/clients/:id", ensureAuthMiddleware, UpdateClientController);
+useRouter.get("/clients", ensureAuthMiddleware, ListClientController);
+useRouter.delete("/clients/:id", ensureAuthMiddleware, DeleteClientController);
 
 //CRUD de Contatos//
-useRouter.post("/contacts", CreateContactController);
-useRouter.patch("/contacts/:id", UpdateContactController);
-useRouter.get("/contacts", ListContactController);
-useRouter.delete("/contacts/:id", DeleteContactController);
+useRouter.post("/contacts", ensureAuthMiddleware, CreateContactController);
+useRouter.patch("/contacts/:id", ensureAuthMiddleware, UpdateContactController);
+useRouter.get("/contacts", ensureAuthMiddleware, ListContactController);
+useRouter.delete(
+  "/contacts/:id",
+  ensureAuthMiddleware,
+  DeleteContactController
+);
 
 export default useRouter;

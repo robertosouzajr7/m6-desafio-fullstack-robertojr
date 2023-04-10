@@ -12,18 +12,18 @@ export class Contacts {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ nullable: false })
+  @Column()
   name: string;
 
-  @Column({ nullable: false })
+  @Column()
   email: string;
 
-  @Column({ nullable: false })
+  @Column()
   phone: string;
 
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Clients, (clients) => clients.id)
-  client_id: Clients;
+  @ManyToOne(() => Clients, { onDelete: "CASCADE" })
+  client_id: string;
 }
