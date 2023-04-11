@@ -35,7 +35,6 @@ export interface iClientRequest {
   name: string;
   email: string;
   phone: string;
-  user_id: string;
 }
 
 export interface iClientResponse {

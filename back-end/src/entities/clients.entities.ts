@@ -4,8 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Users } from "./users.entities";
+import { Contacts } from "./contacts.entities";
 
 @Entity("Clients")
 export class Clients {
@@ -26,6 +28,9 @@ export class Clients {
 
   @ManyToOne(() => Users)
   user_id: Users;
+
+  @OneToMany(() => Contacts, (contact) => contact.client_id)
+  contact: Contacts[];
 }
 
 export default Clients;

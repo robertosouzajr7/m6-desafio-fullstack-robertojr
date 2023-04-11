@@ -6,7 +6,7 @@ AppDataSource.initialize()
   .then(async () => {
     console.log("Database Connected");
 
-    const port = 3000;
+    const port = 3002;
     app.listen(port, () => {
       console.log(`App is running on http://localhost:${port}`);
     });

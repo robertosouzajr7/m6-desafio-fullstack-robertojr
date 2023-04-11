@@ -24,7 +24,7 @@ export const ensureAuthMiddleware = (
         message: "Invalid token",
       });
     }
-    req.body = {
+    req.user = {
       id: decoded.sub,
       isUser: decoded.isUser,
     };
