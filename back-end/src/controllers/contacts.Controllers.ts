@@ -4,8 +4,10 @@ import {
   DeletecontactService,
   ListContactervice,
   UpdatecontactService,
+  getContactbyClient,
+  getContactbyIdService,
 } from "../services/contact.Services";
-import { iContactRequest } from "../interfaces/users.interfaces";
+import { iContactRequest } from "../entities/interfaces/users.interfaces";
 
 export const CreateContactController = async (req: Request, res: Response) => {
   const Contactdata: iContactRequest = req.body;
@@ -23,6 +25,23 @@ export const UpdateContactController = async (req: Request, res: Response) => {
   const id: string = req.params.id;
   const ContactCreated = await UpdatecontactService(Contactdata, id);
   return res.status(200).json(ContactCreated);
+};
+
+export const getContactbyIdController = async (req: Request, res: Response) => {
+  const id: string = req.params.id;
+  const contact = await getContactbyIdService(id);
+  return res.status(200).json(contact);
+};
+
+export const getContactbyClienController = async (
+  req: Request,
+  res: Response
+) => {
+  const idContact: string = req.params.id;
+  //const idClient: string = req.body;
+  const contacts = await getContactbyClient(idContact);
+
+  return res.status(200).json(contacts);
 };
 
 export const DeleteContactController = async (req: Request, res: Response) => {

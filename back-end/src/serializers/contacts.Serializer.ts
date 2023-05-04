@@ -4,7 +4,7 @@ import { SchemaOf } from "yup";
 import {
   iContactRequest,
   iContactResponse,
-} from "../interfaces/users.interfaces";
+} from "../entities/interfaces/users.interfaces";
 
 export const contactRequestSerializer: SchemaOf<iContactRequest> = yup
   .object()
