@@ -3,21 +3,21 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  ManyToOne,
   OneToMany,
+  BeforeInsert,
 } from "typeorm";
-import { Users } from "./users.entities";
+import { Exclude } from "class-transformer";
 import { Contacts } from "./contacts.entities";
-
+import bcrypt from "bcryptjs";
 @Entity("Clients")
 export class Clients {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ nullable: false })
+  @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -26,10 +26,10 @@ export class Clients {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Users)
-  user_id: Users;
+  @Column()
+  password: string;
 
-  @OneToMany(() => Contacts, (contact) => contact.client_id)
+  @OneToMany(() => Contacts, (contact) => contact.clients, { cascade: true })
   contact: Contacts[];
 }
 

@@ -1,10 +1,9 @@
-import AppDataSource from "../data-source";
-import { Users } from "../entities/users.entities";
+/* import AppDataSource from "../data-source";
 import {
   iUserRequest,
   iUserResponse,
   iUserLogin,
-} from "../interfaces/users.interfaces";
+} from "../entities/interfaces/users.interfaces";
 import { AppError } from "../errors";
 import { userResponseSerializer } from "../serializers/users.Serializer";
 import { compare } from "bcryptjs";
@@ -58,3 +57,5 @@ export const LoginUserService = async (req: iUserLogin): Promise<string> => {
   );
   return token;
 };
+ 
+ */

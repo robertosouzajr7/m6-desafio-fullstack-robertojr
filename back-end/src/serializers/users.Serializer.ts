@@ -1,7 +1,10 @@
 import * as yup from "yup";
 import { SchemaOf } from "yup";
 
-import { iUserRequest, iUserResponse } from "../interfaces/users.interfaces";
+import {
+  iUserRequest,
+  iUserResponse,
+} from "../entities/interfaces/users.interfaces";
 
 export const userRequestSerializer: SchemaOf<iUserRequest> = yup
   .object()
