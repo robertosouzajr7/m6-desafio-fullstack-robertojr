@@ -1,46 +1,27 @@
 import styled from "styled-components";
 
 export const StyledCardContact = styled.div`
+  text-align: left;
   display: flex;
-  background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
-  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 15px;
+  flex-direction: column;
+  width: 250px;
   color: black;
-  gap: 5 px;
-  margin-top: 15px;
-
-  figure {
-    display: flex;
-    img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: white;
-    }
-  }
-
-  caption {
-    display: flex;
-    flex-direction: column;
-    color: black;
-    text-align: left;
-
-    h2 {
-      color: black;
-    }
-  }
+  gap: 10px;
+  border-radius: 10px;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+  margin-top: 20px;
+  padding: 25px;
 
   .buttonEdit {
-    display: flex;
-    margin: 15px;
+    margin: 5px;
+    flex-direction: row;
     button {
       background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       border: none;
       border-radius: 10px;
       font-size: 16px;
-      text-align: center;
+      text-align: left;
       color: white;
       padding: 10px;
       margin: 15px;
@@ -52,4 +33,16 @@ export const StyledCardContact = styled.div`
       }
     }
   }
+`;
+
+export const StyledUl = styled.ul`
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 `;

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 export const schemaUserRegister = yup.object().shape({
-  nome: yup.string().required(`Nome obrigatório`),
+  name: yup.string().required(`Nome obrigatório`),
   email: yup.string().required(`E-mail obrigatório!.`).email(`E-mail inválido`),
   password: yup
     .string()
@@ -10,10 +10,7 @@ export const schemaUserRegister = yup.object().shape({
     .matches(/(\d)/, "Deve conter ao menos 1 número")
     .matches(/(\W)|_/, "Deve conter ao menos 1 caracater especial")
     .matches(/.{8,}/, "Deve conter no minimo 8 caracateres"),
-  confirmPassword: yup
-    .string()
-    .required("Confirmar senha obrigatório")
-    .oneOf([yup.ref("password")], "Senha não confere"),
+  phone: yup.string().required("telefone é obrigatório"),
 });
 
 export const schemaUserLogin = yup.object().shape({
