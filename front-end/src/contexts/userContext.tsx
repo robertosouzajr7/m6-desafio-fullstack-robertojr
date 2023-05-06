@@ -1,15 +1,7 @@
-import Api from "../services/api";
 import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ReactNode } from "react";
-import { dataUsers } from "../database/database";
-interface iContact {
-  name: string;
-  phone: string;
-  email: string;
-  notation: string;
-  urlFoto: string;
-}
+import Api from "../services/api";
+import { NavigateFunction, useNavigate, useRoutes } from "react-router-dom";
 
 interface iFormLoginUser {
   email: string;
@@ -17,120 +9,147 @@ interface iFormLoginUser {
 }
 
 interface iFormRegisterUser {
-  nome: string;
+  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  phone: string;
+}
+
+interface iFormRegisterResponse {
+  name: string;
+  email: string;
+  phone: string;
+  created_at: string;
+  id: string;
 }
 
 interface iUserContext {
   RegisterUser: (data: iFormRegisterUser) => void;
   HandleFormLogin: (data: iFormLoginUser) => void;
-  //listContact: () => void;
-  setUser: React.Dispatch<React.SetStateAction<iFormRegisterUser>>;
-  setContact: React.Dispatch<React.SetStateAction<iContact>>;
-  setLisContacts: React.Dispatch<React.SetStateAction<[]>>;
-  setLogout: React.Dispatch<React.SetStateAction<boolean>>;
-  //deleteUser: (id: string) => void;
-  CreateContact: (data: iContact) => void;
-  user: iFormRegisterUser;
-  contact: iContact;
-  listContacts: [];
-  logout: boolean;
+  setUser: React.Dispatch<React.SetStateAction<iFormRegisterResponse>>;
+  user: iFormRegisterResponse;
+  client_id: string | null;
+  token: string;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
+  routes: NavigateFunction;
+  ListClients: () => void;
+  UpdateClientbyId: (id: string) => void;
+  DeleteClientbyId: (id: string) => void;
 }
 
-interface iChildren {
+export interface iChildren {
   children: ReactNode;
 }
 
 export const UserContext = createContext<iUserContext>({} as iUserContext);
 
 function UserProvider({ children }: iChildren) {
-  const [user, setUser] = useState<iFormRegisterUser>({} as iFormRegisterUser);
-  const [userLogin, setUserLogin] = useState<iFormLoginUser>(
-    {} as iFormLoginUser
+  const [user, setUser] = useState<iFormRegisterResponse>(
+    {} as iFormRegisterResponse
   );
-  const [contact, setContact] = useState<iContact>({} as iContact);
-  const [listContacts, setLisContacts] = useState<[]>([]);
-  const [logout, setLogout] = useState(false);
+  const [token, setToken] = useState<string>("");
+  localStorage.setItem("idClient", user.id);
+  const client_id = localStorage.getItem("idClient");
+  const getToken = localStorage.getItem("token");
+  const clearToken = localStorage.removeItem("token");
+  const routes = useNavigate();
 
-  const navigate = useNavigate();
-
-  const RegisterUser = (data: iFormRegisterUser) => {
-    setUser(data);
-    /* try {
-        navigate(`/dashboard`);
-      const response = await Api.post("/user", data);
-      setUser(response.data.user);
-      navigate(`/dashboard`);
-    } catch (err) {
-      console.error(err);
-    } */
-  };
-
-  const CreateContact = (data: iContact) => {
-    setContact(data);
-    console.log(data);
-    /* try {
-      const response = Api.post("/contact", data).then((res) => {
-        setContact(res.data);
-      });
-      setLisContacts(contact);
-    } catch (error) {
-      console.error(error);
-    } */
-  };
-
-  const HandleFormLogin = (data: iFormLoginUser) => {
-    setUserLogin(data);
-    console.log(userLogin);
-    /* try {
-        navigate(`/dashboard`);
-      Api.post("/user:id", data).then((response) => {
-        setUser(response.data.user);
-      });
-    } catch (error) {
-      console.error(error);
-    } */
-  };
-  /* 
-  useEffect(() => {
-    async function getUser() {
-      try {
-        const data: iContact = await Api.get("/users");
-        setLisContacts(data);
-      } catch (error) {
-        console.error(error);
+  const RegisterUser = async (data: iFormRegisterUser) => {
+    try {
+      const user = await Api.post(`/clients/`, data);
+      setUser(user.data);
+      if (user.data) {
+        routes(`/login`);
       }
+      return user.data;
+    } catch (error) {
+      console.log(error);
     }
-    getUser();
+  };
+
+  const HandleFormLogin = async (data: iFormLoginUser) => {
+    try {
+      const token = await Api.post("/login", data);
+      setToken(token.data);
+      if (token.data) {
+        localStorage.setItem("token", token.data);
+        routes(`/dashboard`);
+      }
+      return token.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const ListClients = async () => {
+    await Api.get("/clients", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer${token}`,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    const GetClientbyToken = async () => {
+      await Api.get(`/clients/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer${token}`,
+        },
+      })
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((err) => console.log(err));
+    };
+    GetClientbyToken();
   }, []);
 
-  const listContact = async () => {
-    const users: iContact = await Api.get("/users");
-    setLisContacts(users);
+  const UpdateClientbyId = async (id: string) => {
+    await Api.patch(`/clients/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer${token}`,
+      },
+    })
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((err) => console.log(err));
   };
 
-  const deleteUser = async (id: any) => {
-    await Api.delete(`/users/${id}`);
-  }; */
+  const DeleteClientbyId = async (id: string) => {
+    await Api.delete(`/clients/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer${token}`,
+      },
+    })
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
-        contact,
-        setContact,
-        listContacts,
-        setLisContacts,
-        logout,
-        setLogout,
         RegisterUser,
         HandleFormLogin,
-        // listContact,
-        // deleteUser,
-        CreateContact,
+        ListClients,
+        UpdateClientbyId,
+        DeleteClientbyId,
+        client_id,
+        token,
+        setToken,
+        routes,
       }}
     >
       {children}

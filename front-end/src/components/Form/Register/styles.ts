@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const StyledFormRegister = styled.div`
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
   gap: 10px;
@@ -10,7 +11,7 @@ export const StyledFormRegister = styled.div`
     text-align: left;
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 100%;
     color: black;
     gap: 10px;
     border-radius: 10px;
