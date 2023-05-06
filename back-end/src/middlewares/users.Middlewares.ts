@@ -1,10 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors";
 import AppDataSource from "../data-source";
-import { Users } from "../entities/users.entities";
 import jwt from "jsonwebtoken";
 import { AnySchema, object } from "yup";
 import "dotenv/config";
+import Clients from "../entities/clients.entities";
+import {
+  iClientRequest,
+  iClientResponse,
+  iUserLogin,
+  iUserRequest,
+} from "../entities/interfaces/users.interfaces";
+
 export const ensureAuthMiddleware = (
   req: Request,
   res: Response,
@@ -18,19 +25,20 @@ export const ensureAuthMiddleware = (
 
   token = token.split(" ")[1];
 
-  jwt.verify(token, process.env.SECRET_KEY as string, (err, decoded: any) => {
-    if (err) {
-      return res.status(401).json({
-        message: "Invalid token",
-      });
-    }
-    req.user = {
-      id: decoded.sub,
-      isUser: decoded.isUser,
-    };
+  jwt.verify(
+    token,
+    process.env.SECRET_KEY as string,
+    (err, user: iClientResponse) => {
+      if (err) {
+        return res.status(401).json({
+          message: "Invalid token",
+        });
+      }
+      req.user = user;
 
-    return next();
-  });
+      return next();
+    }
+  );
 };
 
 export const ensureEmailMIddleware = async (
@@ -39,7 +47,7 @@ export const ensureEmailMIddleware = async (
   next: NextFunction
 ) => {
   const { email }: any = req.body;
-  const findUser = AppDataSource.getRepository(Users);
+  const findUser = AppDataSource.getRepository(Clients);
   const user = await findUser.exist({ where: { email: email } });
   if (user) {
     throw new AppError("Email arealdy exists!", 400);
@@ -53,15 +61,15 @@ export const ensureExistsUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userId = req.params.id;
+  const { email, password }: iUserLogin = req.body;
 
-  if (!userId) {
-    throw new AppError("Invalid id", 404);
+  if (!email || !password) {
+    throw new AppError("Dados Inválidos", 404);
   }
 
-  const userRespository = AppDataSource.getRepository(Users);
+  const userRespository = AppDataSource.getRepository(Clients);
 
-  const foundUser = await userRespository.find({ where: { id: userId } });
+  const foundUser = await userRespository.find({ where: { email: email } });
 
   if (foundUser.length < 1) {
     throw new AppError("User not found", 404);

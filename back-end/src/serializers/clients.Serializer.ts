@@ -4,14 +4,14 @@ import { SchemaOf } from "yup";
 import {
   iClientRequest,
   iClientResponse,
-} from "../interfaces/users.interfaces";
+} from "../entities/interfaces/users.interfaces";
 
 export const clientRequestSerializer: SchemaOf<iClientRequest> = yup
   .object()
   .shape({
     name: yup.string().required(),
     email: yup.string().email().required(),
-    password: yup.string().required(),
+    password: yup.string().required().min(8),
     phone: yup.string().required(),
     user_id: yup.string(),
   });
