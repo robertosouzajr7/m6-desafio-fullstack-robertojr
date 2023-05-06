@@ -20,6 +20,7 @@ export const MainStyled = styled.main`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
   color: #e2e1e5;
   height: 100vh;
   width: 100%;

@@ -5,10 +5,10 @@ import { StyledFormRegister } from "./styles";
 import { useContext } from "react";
 import { UserContext } from "../../../contexts/userContext";
 export interface iFormRegisterUser {
-  nome: string;
+  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  phone: string;
 }
 
 export const FormRegisterUser = () => {
@@ -26,19 +26,19 @@ export const FormRegisterUser = () => {
         <input
           type="text"
           placeholder="Insira seu nome"
-          {...register("nome")}
+          {...register("name")}
         />
-        {errors.nome?.message}
+        {errors.name?.message}
         <input type="text" placeholder="seu email" {...register("email")} />
         {errors.email?.message}
-        <input type="text" placeholder="sua sennha" {...register("password")} />
-        {errors.password?.message}
         <input
-          type="text"
-          placeholder="Confirme senha"
-          {...register("confirmPassword")}
+          type="password"
+          placeholder="sua sennha"
+          {...register("password")}
         />
-        {errors.confirmPassword?.message}
+        {errors.password?.message}
+        <input type="text" placeholder="Telefone" {...register("phone")} />
+        {errors.phone?.message}
         <button type="submit">Enviar</button>
       </form>
     </StyledFormRegister>

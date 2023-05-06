@@ -1,5 +1,7 @@
 import { StyledHeader } from "./style";
 import logo from "../../assets/logo-ico.png";
+import { iChildren } from "../../contexts/userContext";
+
 function Header() {
   return (
     <StyledHeader>
@@ -9,6 +11,7 @@ function Header() {
       </div>
       <nav>
         <ul>
+          <p>Bem vindo!</p>
           <li>
             <a href="#">Início</a>
           </li>
