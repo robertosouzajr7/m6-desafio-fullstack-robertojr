@@ -11,7 +11,9 @@ import { iContactRequest } from "../entities/interfaces/users.interfaces";
 
 export const CreateContactController = async (req: Request, res: Response) => {
   const Contactdata: iContactRequest = req.body;
-  const ContactCreated = await CreateContactService(Contactdata);
+  const idClient = req.user.id;
+  console.log(idClient);
+  const ContactCreated = await CreateContactService(Contactdata, idClient);
   return res.status(201).json(ContactCreated);
 };
 

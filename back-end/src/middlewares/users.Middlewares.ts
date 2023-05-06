@@ -5,7 +5,12 @@ import jwt from "jsonwebtoken";
 import { AnySchema, object } from "yup";
 import "dotenv/config";
 import Clients from "../entities/clients.entities";
-import { iUserLogin } from "../entities/interfaces/users.interfaces";
+import {
+  iClientRequest,
+  iClientResponse,
+  iUserLogin,
+  iUserRequest,
+} from "../entities/interfaces/users.interfaces";
 
 export const ensureAuthMiddleware = (
   req: Request,
@@ -20,19 +25,20 @@ export const ensureAuthMiddleware = (
 
   token = token.split(" ")[1];
 
-  jwt.verify(token, process.env.SECRET_KEY as string, (err, decoded: any) => {
-    if (err) {
-      return res.status(401).json({
-        message: "Invalid token",
-      });
-    }
-    req.user = {
-      id: decoded.sub,
-      isUser: decoded.isUser,
-    };
+  jwt.verify(
+    token,
+    process.env.SECRET_KEY as string,
+    (err, user: iClientResponse) => {
+      if (err) {
+        return res.status(401).json({
+          message: "Invalid token",
+        });
+      }
+      req.user = user;
 
-    return next();
-  });
+      return next();
+    }
+  );
 };
 
 export const ensureEmailMIddleware = async (
