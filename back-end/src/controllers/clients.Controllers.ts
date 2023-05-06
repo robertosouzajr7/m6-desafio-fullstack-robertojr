@@ -45,7 +45,7 @@ export const DeleteClientController = async (req: Request, res: Response) => {
 };
 
 export const getClientbyIdControllers = async (req: Request, res: Response) => {
-  const idClient: string = req.params.id;
+  const idClient: string = req.user.id;
   const data = await getClientbyIdService(idClient);
   return res.status(200).json(data);
 };

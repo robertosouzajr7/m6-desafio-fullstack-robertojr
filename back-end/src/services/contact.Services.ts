@@ -11,16 +11,17 @@ import Clients from "../entities/clients.entities";
 import { Repository } from "typeorm";
 
 export const CreateContactService = async (
-  req: iContactRequest
+  req: iContactRequest,
+  id: string
 ): Promise<iContactResponse> => {
+  console.log(id);
   const { client_id } = req;
   const ContactRepository: Repository<Contacts> =
     AppDataSource.getRepository(Contacts);
   const ClientsRepository: Repository<Clients> =
     AppDataSource.getRepository(Clients);
 
-  const Client = await ClientsRepository.findOneBy({ id: client_id });
-  console.log(Client, client_id);
+  const Client = await ClientsRepository.findOneBy({ id: id });
   const contact = ContactRepository.create({
     email: req.email,
     name: req.name,
@@ -84,20 +85,10 @@ export const UpdatecontactService = async (
   return updatecontact;
 };
 
-export const ListContactervice = async (): Promise<iContactResponse[]> => {
+export const ListContactervice = async () => {
   const findcontacts = AppDataSource.getRepository(Contacts);
   const contacts = await findcontacts.find();
-
-  const listcontacts = await Promise.all(
-    contacts.map(async (contact) => {
-      const allcontacts = await contactResponseSerializer.validate(contact, {
-        stripUnknown: true,
-      });
-      return allcontacts;
-    })
-  );
-
-  return listcontacts;
+  return contacts;
 };
 
 export const DeletecontactService = async (id: string) => {

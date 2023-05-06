@@ -48,7 +48,7 @@ export const LoginClientService = async (req: iUserLogin): Promise<string> => {
 
   const token = jwt.sign(
     {
-      email: client,
+      id: client.id,
     },
     process.env.SECRET_KEY as string,
     {

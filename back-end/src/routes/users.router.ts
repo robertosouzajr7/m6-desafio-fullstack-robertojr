@@ -32,13 +32,13 @@ useRouter.post("/clients", ensureEmailMIddleware, CreateClientController);
 useRouter.patch("/clients/:id", ensureAuthMiddleware, UpdateClientController);
 useRouter.get("/clients", ListClientController);
 useRouter.delete("/clients/:id", ensureAuthMiddleware, DeleteClientController);
-useRouter.get("/clients/:id", ensureAuthMiddleware, getClientbyIdControllers);
+useRouter.get("/clients/", ensureAuthMiddleware, getClientbyIdControllers);
 
 //CRUD de Contatos//
 useRouter.post("/contacts", ensureAuthMiddleware, CreateContactController);
 useRouter.patch("/contacts/:id", ensureAuthMiddleware, UpdateContactController);
 useRouter.get("/contacts/:id", ensureAuthMiddleware, getContactbyIdController);
-useRouter.get("/contacts", ListContactController);
+useRouter.get("/contacts", ensureAuthMiddleware, ListContactController);
 useRouter.get(
   "/contacts/clients/:id",
   ensureAuthMiddleware,
