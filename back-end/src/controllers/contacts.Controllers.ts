@@ -39,7 +39,8 @@ export const getContactbyClienController = async (
   req: Request,
   res: Response
 ) => {
-  const idContact: string = req.params.id;
+  const idContact: any = req.params.id;
+  console.log(idContact);
   //const idClient: string = req.body;
   const contacts = await getContactbyClient(idContact);
 

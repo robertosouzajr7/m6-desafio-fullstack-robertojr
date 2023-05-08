@@ -44,7 +44,7 @@ export const getContactbyIdService = async (id: string) => {
 };
 
 export const getContactbyClient = async (
-  idClient: string
+  idClient
   //idContact: string
 ) => {
   const contactRepository = AppDataSource.getRepository(Contacts);
