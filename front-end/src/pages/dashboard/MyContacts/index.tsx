@@ -8,7 +8,6 @@ export function MyContactsPage() {
       <StyledDashboard>
         <h2>Meus Contatos</h2>
         <CardContact />
-        <CardContact />
         <button>Cadastrar novo Usuário</button>
       </StyledDashboard>
     </>

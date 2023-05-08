@@ -32,9 +32,11 @@ interface iUserContext {
   token: string;
   setToken: React.Dispatch<React.SetStateAction<string>>;
   routes: NavigateFunction;
-  ListClients: () => void;
+  GetAllClients: () => void;
   UpdateClientbyId: (id: string) => void;
   DeleteClientbyId: (id: string) => void;
+  GetClient: () => void;
+  //GetClientbyId: () => void;
 }
 
 export interface iChildren {
@@ -49,9 +51,9 @@ function UserProvider({ children }: iChildren) {
   );
   const [token, setToken] = useState<string>("");
   localStorage.setItem("idClient", user.id);
+  const [listClient, setListClient] = useState<iFormRegisterResponse>();
   const client_id = localStorage.getItem("idClient");
-  const getToken = localStorage.getItem("token");
-  const clearToken = localStorage.removeItem("token");
+
   const routes = useNavigate();
 
   const RegisterUser = async (data: iFormRegisterUser) => {
@@ -73,6 +75,7 @@ function UserProvider({ children }: iChildren) {
       setToken(token.data);
       if (token.data) {
         localStorage.setItem("token", token.data);
+        GetClient();
         routes(`/dashboard`);
       }
       return token.data;
@@ -81,40 +84,36 @@ function UserProvider({ children }: iChildren) {
     }
   };
 
-  const ListClients = async () => {
-    await Api.get("/clients", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer${token}`,
-      },
+  const GetAllClients = async () => {
+    await Api.get("/clients/lista")
+      .then((response) => {
+        setListClient(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const GetClient = async () => {
+    await Api.get("/clients/", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
-        console.log(response);
+        setUser(response.data);
+        console.log(response.data);
+        localStorage.setItem("idClient", user.id);
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
-    const GetClientbyToken = async () => {
-      await Api.get(`/clients/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer${token}`,
-        },
-      })
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((err) => console.log(err));
-    };
-    GetClientbyToken();
+    GetAllClients();
+    GetClient();
   }, []);
 
   const UpdateClientbyId = async (id: string) => {
-    await Api.patch(`/clients/${id}`, {
+    await Api.patch(`/clients/${user.id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer${token}`,
+        Authorization: `Bearer${localStorage.getItem("token")}`,
       },
     })
       .then((response) => {
@@ -127,7 +126,7 @@ function UserProvider({ children }: iChildren) {
     await Api.delete(`/clients/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer${token}`,
+        Authorization: `Bearer${localStorage.getItem("token")}`,
       },
     })
       .then((response) => {
@@ -143,13 +142,14 @@ function UserProvider({ children }: iChildren) {
         setUser,
         RegisterUser,
         HandleFormLogin,
-        ListClients,
+        GetAllClients,
         UpdateClientbyId,
         DeleteClientbyId,
         client_id,
         token,
         setToken,
         routes,
+        GetClient,
       }}
     >
       {children}
