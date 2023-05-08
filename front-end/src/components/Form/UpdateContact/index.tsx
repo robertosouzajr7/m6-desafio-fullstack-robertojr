@@ -1,16 +1,28 @@
 import { schemaCreateContact } from "../../../services/Validation/createUser.validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StyledFormRegisterContact } from "./styles";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   ContactContext,
   iContactRequest,
+  iContactResponse,
 } from "../../../contexts/contactContext";
 import { useForm } from "react-hook-form";
+import { UserContext } from "../../../contexts/userContext";
 
 export const FormUpdateContact = () => {
-  const { CreateContact, edit } = useContext(ContactContext);
-  const idClient = localStorage.getItem("idClient");
+  const {
+    UpdateContacts,
+    edit,
+    contact,
+    GetContactById,
+    GetContactsByClientId,
+  } = useContext(ContactContext);
+  const { GetAllClients, user, client_id, token } = useContext(UserContext);
+  useEffect(() => {
+    console.log(token, contact, client_id, user.name);
+    //console.log(client_id, token, contact);
+  }, []);
 
   const {
     handleSubmit,
@@ -20,31 +32,25 @@ export const FormUpdateContact = () => {
 
   return (
     <>
-      {edit ? (
-        <StyledFormRegisterContact>
-          <form onSubmit={handleSubmit(CreateContact)}>
-            <input
-              type="text"
-              placeholder="Insira o nome"
-              {...register("name")}
-            />
-            {errors.name?.message}
-            <input
-              type="text"
-              placeholder="Insira o email"
-              {...register("email")}
-            />
-            {errors.email?.message}
-            <input
-              type="text"
-              placeholder="Insira o Telefone"
-              {...register("phone")}
-            />
-            {errors.phone?.message}
-            <button type="submit">Cadastrar</button>
-          </form>
-        </StyledFormRegisterContact>
-      ) : null}
+      <StyledFormRegisterContact>
+        <form onSubmit={handleSubmit(() => UpdateContacts)}>
+          <input type="text" placeholder={contact.name} {...register("name")} />
+          {errors.name?.message}
+          <input
+            type="text"
+            placeholder={contact.email}
+            {...register("email")}
+          />
+          {errors.email?.message}
+          <input
+            type="text"
+            placeholder={contact.phone}
+            {...register("phone")}
+          />
+          {errors.phone?.message}
+          <button type="submit">Cadastrar</button>
+        </form>
+      </StyledFormRegisterContact>
     </>
   );
 };
