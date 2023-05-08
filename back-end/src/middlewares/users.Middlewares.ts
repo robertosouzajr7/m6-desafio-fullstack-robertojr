@@ -25,20 +25,16 @@ export const ensureAuthMiddleware = (
 
   token = token.split(" ")[1];
 
-  jwt.verify(
-    token,
-    process.env.SECRET_KEY as string,
-    (err, user: iClientResponse) => {
-      if (err) {
-        return res.status(401).json({
-          message: "Invalid token",
-        });
-      }
-      req.user = user;
-
-      return next();
+  jwt.verify(token, process.env.SECRET_KEY as string, (err, user: any) => {
+    if (err) {
+      return res.status(401).json({
+        message: "Invalid token",
+      });
     }
-  );
+    req.user = user;
+
+    return next();
+  });
 };
 
 export const ensureEmailMIddleware = async (
