@@ -11,14 +11,8 @@ import { CardContact } from "../../components/Card";
 import Api from "../../services/api";
 function Dashboard() {
   const { user, token, routes, GetClient } = useContext(UserContext);
-  const {
-    contact,
-    setListContact,
-    listContact,
-    GetAllContacts,
-    setContact,
-    GetContactsByClientId,
-  } = useContext(ContactContext);
+  const { listContact, SetlistContact, GetAllContacts, GetContactsByClientId } =
+    useContext(ContactContext);
   const [showContacts, setShowContacts] = useState<boolean>(false);
   console.log(listContact);
   useEffect(() => {
@@ -28,26 +22,16 @@ function Dashboard() {
 
     localStorage.setItem("token", token);
     //GetContactsByClientId(user.id);
-    if (listContact.length > 0) {
+    if (listContact.contact) {
       GetAllContacts();
+      GetContactsByClientId();
     }
-  }, [contact]);
+  }, []);
 
   if (showContacts === true) {
   }
   useEffect(() => {
     GetClient();
-    /* const GetClientbyId = async () => {
-      await Api.get(`/clients/`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-        .then((response) => {
-          console.log(response.data, user);
-          setUser(response.data);
-        })
-        .catch((err) => console.log(err));
-    };
-    GetClientbyId(); */
   }, []);
 
   return (
@@ -67,14 +51,13 @@ function Dashboard() {
             >
               Ver todos os Contatos
             </button>
-            <button
-              className="btnAllContacts"
-              onClick={() => setContact(contact)}
-            >
+            <button className="btnAllContacts" onClick={() => {SetlistContact([])}}>
               Fechar
             </button>
           </div>
-          {contact.name ? <CardContact lista={contact} /> : null}
+          {listContact.contact ? (
+            <CardContact lista={listContact.contact} />
+          ) : null}
         </div>
       </StyledDashboard>
       <StyledFooter>

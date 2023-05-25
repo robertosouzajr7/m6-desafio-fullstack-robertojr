@@ -5,24 +5,11 @@ import { useContext, useEffect } from "react";
 import {
   ContactContext,
   iContactRequest,
-  iContactResponse,
 } from "../../../contexts/contactContext";
 import { useForm } from "react-hook-form";
-import { UserContext } from "../../../contexts/userContext";
 
-export const FormUpdateContact = () => {
-  const {
-    UpdateContacts,
-    edit,
-    contact,
-    GetContactById,
-    GetContactsByClientId,
-  } = useContext(ContactContext);
-  const { GetAllClients, user, client_id, token } = useContext(UserContext);
-  useEffect(() => {
-    console.log(token, contact, client_id, user.name);
-    //console.log(client_id, token, contact);
-  }, []);
+export const FormUpdateContact = (id: any) => {
+  const { UpdateContacts, GetContactById } = useContext(ContactContext);
 
   const {
     handleSubmit,
@@ -30,27 +17,36 @@ export const FormUpdateContact = () => {
     formState: { errors },
   } = useForm<iContactRequest>({ resolver: yupResolver(schemaCreateContact) });
 
+  const onSubmit = (data: any) => {
+    console.log(data);
+    UpdateContacts(data, data.id);
+  };
+
+  useEffect(() => {
+    const user = GetContactById(id);
+  }, []);
+
   return (
     <>
       <StyledFormRegisterContact>
-        <form onSubmit={handleSubmit(() => UpdateContacts)}>
-          <input type="text" placeholder={contact.name} {...register("name")} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="text" placeholder={""} {...register("name")} />
           {errors.name?.message}
-          <input
-            type="text"
-            placeholder={contact.email}
-            {...register("email")}
-          />
+          <input type="text" placeholder={""} {...register("email")} />
           {errors.email?.message}
-          <input
-            type="text"
-            placeholder={contact.phone}
-            {...register("phone")}
-          />
+          <input type="text" placeholder={""} {...register("phone")} />
           {errors.phone?.message}
           <button type="submit">Cadastrar</button>
+          <button>Cadastrar</button>
         </form>
       </StyledFormRegisterContact>
+      ;
     </>
   );
 };
+/* contact={contact.contact}
+            created_at={contact.created_at}
+            email={contact.email}
+            id={contact.id}
+            name={contact.name}
+            phone={contact.phone} */

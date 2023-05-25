@@ -33,7 +33,7 @@ interface iUserContext {
   setToken: React.Dispatch<React.SetStateAction<string>>;
   routes: NavigateFunction;
   GetAllClients: () => void;
-  UpdateClientbyId: (id: string) => void;
+  //UpdateClientbyId: (id: string) => void;
   DeleteClientbyId: (id: string) => void;
   GetClient: () => void;
   //GetClientbyId: () => void;
@@ -98,6 +98,7 @@ function UserProvider({ children }: iChildren) {
     })
       .then((response) => {
         setUser(response.data);
+
         console.log(response.data);
         localStorage.setItem("idClient", user.id);
       })
@@ -109,7 +110,7 @@ function UserProvider({ children }: iChildren) {
     GetClient();
   }, []);
 
-  const UpdateClientbyId = async (id: string) => {
+  /* const UpdateClientbyId = async (id: string) => {
     await Api.patch(`/clients/${user.id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +121,7 @@ function UserProvider({ children }: iChildren) {
         setUser(response.data);
       })
       .catch((err) => console.log(err));
-  };
+  }; */
 
   const DeleteClientbyId = async (id: string) => {
     await Api.delete(`/clients/${id}`, {
@@ -143,7 +144,7 @@ function UserProvider({ children }: iChildren) {
         RegisterUser,
         HandleFormLogin,
         GetAllClients,
-        UpdateClientbyId,
+        // UpdateClientbyId,
         DeleteClientbyId,
         client_id,
         token,
