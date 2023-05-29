@@ -35,6 +35,7 @@ interface iUserContext {
   ListClients: () => void;
   UpdateClientbyId: (id: string) => void;
   DeleteClientbyId: (id: string) => void;
+  GetClientbyToken: () => void;
 }
 
 export interface iChildren {
@@ -50,8 +51,6 @@ function UserProvider({ children }: iChildren) {
   const [token, setToken] = useState<string>("");
   localStorage.setItem("idClient", user.id);
   const client_id = localStorage.getItem("idClient");
-  const getToken = localStorage.getItem("token");
-  const clearToken = localStorage.removeItem("token");
   const routes = useNavigate();
 
   const RegisterUser = async (data: iFormRegisterUser) => {
@@ -69,13 +68,12 @@ function UserProvider({ children }: iChildren) {
 
   const HandleFormLogin = async (data: iFormLoginUser) => {
     try {
-      const token = await Api.post("/login", data);
-      setToken(token.data);
-      if (token.data) {
-        localStorage.setItem("token", token.data);
-        routes(`/dashboard`);
-      }
-      return token.data;
+      const gettoken = await Api.post("/login", data);
+      setToken(gettoken.data);
+      localStorage.setItem("token", gettoken.data);
+      GetClientbyToken();
+      routes(`/dashboard`);
+      return gettoken.data;
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +83,7 @@ function UserProvider({ children }: iChildren) {
     await Api.get("/clients", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -94,21 +92,25 @@ function UserProvider({ children }: iChildren) {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    const GetClientbyToken = async () => {
-      await Api.get(`/clients/`, {
+  const GetClientbyToken = async () => {
+    const validToken = localStorage.getItem("token");
+    if (validToken) {
+      await Api.get(`/client/`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer${token}`,
+          Authorization: `Bearer ${validToken}`,
         },
       })
         .then((response) => {
+          console.log(response.data);
           setUser(response.data);
+          localStorage.setItem("idClient", user.id);
         })
         .catch((err) => console.log(err));
-    };
-    GetClientbyToken();
-  }, []);
+    } else {
+      routes(`/login`);
+    }
+  };
 
   const UpdateClientbyId = async (id: string) => {
     await Api.patch(`/clients/${id}`, {
@@ -150,6 +152,7 @@ function UserProvider({ children }: iChildren) {
         token,
         setToken,
         routes,
+        GetClientbyToken,
       }}
     >
       {children}

@@ -1,36 +1,29 @@
 import { StyledDashboard, StyledFooter } from "./styles";
 import Header from "../../components/Header";
 import { FormRegisterContact } from "../../components/Form/RegisterContact";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/userContext";
-import { ContactContext } from "../../contexts/contactContext";
+import {
+  ContactContext,
+  iListContactResponse,
+} from "../../contexts/contactContext";
 import { CardContact } from "../../components/Card";
 function Dashboard() {
-  const { client_id, user, token, setToken, routes } = useContext(UserContext);
-  const {
-    contact,
-    getToken,
-    GetContactsById,
-    setListContact,
-    listContact,
-    GetAllContacts,
-  } = useContext(ContactContext);
-  const [showContacts, setShowContacts] = useState<boolean>(false);
+  const { user, GetClientbyToken } = useContext(UserContext);
+  const { GetContactsById, listContact, setListContact, showCard } =
+    useContext(ContactContext);
   useEffect(() => {
-    if (!token || null) {
-      routes(`/`);
-    }
+    console.log(user);
+    GetClientbyToken();
+    // GetContactsById();
 
-    localStorage.setItem("token", token);
-    GetContactsById(user.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (listContact.length > 0) {
-      GetAllContacts();
-    }
-  }, [contact]);
+  const deletar = () => {
+    setListContact(listContact);
+  };
 
-  if (showContacts === true) {
-  }
   return (
     <>
       <Header />
@@ -43,18 +36,10 @@ function Dashboard() {
       </StyledDashboard>
       <StyledFooter>
         <div>
-          <button onClick={() => GetAllContacts()} className="btnAllContacts">
+          <button onClick={() => GetContactsById()} className="btnAllContacts">
             Ver todos os Contatos
           </button>
-          {listContact.length > 0 ? <CardContact lista={listContact} /> : null}
-          {listContact.length > 0 ? (
-            <button
-              className="btnAllContacts"
-              onClick={() => setListContact([])}
-            >
-              Fechar
-            </button>
-          ) : null}
+          {showCard === true ? <CardContact /> : null}
         </div>
       </StyledFooter>
     </>

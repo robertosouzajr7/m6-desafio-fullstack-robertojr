@@ -6,46 +6,37 @@ import {
 } from "../../contexts/contactContext";
 import { FormRegisterContact } from "../Form/RegisterContact";
 import { FormUpdateContact } from "../Form/UpdateContact";
+import { UserContext } from "../../contexts/userContext";
 
-export function CardContact(lista: any) {
-  const { listContact, edit, setEdit } = useContext(ContactContext);
-  useEffect(() => {}, []);
+export function CardContact() {
+  const { listContact, edit, setEdit, GetContactsById, DeleteContact } =
+    useContext(ContactContext);
+  const { GetClientbyToken } = useContext(UserContext);
 
-  const editUser = (id: string) => {
-    setEdit(true);
-    localStorage.setItem("idContact", id);
-  };
-
-  /*  {edit === "true" ? (
-    <input type="text" placeholder="Insira nome" />
-  ) : null} */
-
-  const apagarContato = (id: string) => {
+  const GetId = (id: string) => {
     console.log(id);
+    DeleteContact(id);
   };
+
   return (
     <>
-      {edit ? (
-        <FormUpdateContact />
-      ) : (
+      {listContact ? (
         <StyledUl>
-          {listContact.map((data: iContactResponse) => (
+          {listContact.contact.map((data: any) => (
             <StyledCardContact>
               <li key={data.id}>
                 <h3>{data.name}</h3>
                 <p>{data.phone}</p>
                 <p>{data.email}</p>
                 <div className="buttonEdit">
-                  <button onClick={() => editUser(data.id)}>editar</button>
-                  <button onClick={() => apagarContato(data.id)}>
-                    deletar
-                  </button>
+                  <button>editar</button>
+                  <button onClick={() => GetId(data.id)}>deletar</button>
                 </div>
               </li>
             </StyledCardContact>
           ))}
         </StyledUl>
-      )}
+      ) : null}
     </>
   );
 }

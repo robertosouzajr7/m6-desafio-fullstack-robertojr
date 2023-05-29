@@ -22,18 +22,31 @@ export interface iContactResponse {
   id: string;
 }
 
+export interface iListContactResponse {
+  contact: [];
+  created_at: string;
+  email: string;
+  id: string;
+  name: string;
+  password: string;
+  phone: string;
+}
+
 interface iContactContext {
   setContact: React.Dispatch<React.SetStateAction<iContactResponse>>;
   CreateContact: (data: iContactRequest) => void;
   contact: iContactResponse;
-  listContact: [];
-  setListContact: React.Dispatch<React.SetStateAction<[]>>;
+  listContact: iListContactResponse;
+  setListContact: React.Dispatch<React.SetStateAction<iListContactResponse>>;
   getToken: string | null;
   edit: boolean;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   GetAllContacts: () => void;
-  GetContactsById: (id: string) => void;
+  GetContactsById: () => void;
   UpdateContacts: (id: string) => void;
+  showCard: boolean;
+  setShowCard: React.Dispatch<React.SetStateAction<boolean>>;
+  DeleteContact: (id: string) => void;
 }
 
 interface iChildren {
@@ -49,8 +62,11 @@ function ContactProvider({ children }: iChildren) {
   const [contact, setContact] = useState<iContactResponse>(
     {} as iContactResponse
   );
-  const [listContact, setListContact] = useState<[]>([]);
+  const [listContact, setListContact] = useState<iListContactResponse>(
+    {} as iListContactResponse
+  );
   const [edit, setEdit] = useState(false);
+  const [showCard, setShowCard] = useState<boolean>(false);
 
   const CreateContact = async (data: iContactRequest) => {
     const getToken = localStorage.getItem("token");
@@ -71,18 +87,35 @@ function ContactProvider({ children }: iChildren) {
       const contacts = await Api.get(`/contacts/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+      console.log(contacts.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const GetContactsById = async () => {
+    const validToken = localStorage.getItem("token");
+    const idClient = localStorage.getItem("idClient");
+    try {
+      const contacts = await Api.get(`/contacts/clients/${idClient}`, {
+        headers: { Authorization: `Bearer ${validToken}` },
+      });
+      console.log(contacts.data);
+      setShowCard(true);
       setListContact(contacts.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const GetContactsById = async (id: string) => {
+  const DeleteContact = async (id: string) => {
+    const validToken = localStorage.getItem("token");
     try {
-      const contacts = await Api.get(`/contacts/clients/${id}`, {
-        headers: { Authorization: `Bearer ${getToken}` },
+      const contacts = await Api.delete(`/contacts/${id}`, {
+        headers: { Authorization: `Bearer ${validToken}` },
       });
-      setListContact(contacts.data);
+      console.log(contacts.data);
+      GetContactsById();
     } catch (error) {
       console.log(error);
     }
@@ -113,6 +146,9 @@ function ContactProvider({ children }: iChildren) {
         GetAllContacts,
         GetContactsById,
         UpdateContacts,
+        showCard,
+        setShowCard,
+        DeleteContact,
       }}
     >
       {children}
